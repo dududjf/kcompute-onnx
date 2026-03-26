@@ -1,7 +1,7 @@
 import numpy as np
 from kp import Manager
 import time
-from kp_onnx.kop_split import SplitOp
+from kp_onnx_ssbo.kop_split import SplitOp
 
 device_id = 0
 mgr = Manager(device_id)
@@ -67,14 +67,14 @@ for i in range(len(np_out)):
     print(np.allclose(np_out[i], kp_out[i], rtol=1e-4, atol=1e-4))
 print('----')
 
-print("Case 3: not split, axis is -1, num_outputs is 36")
+print("Case 3: not split, axis is -1, num_outputs is 8")
 start_time = time.time()
-np_out = np_split(x, axis=-1, num_outputs=36)
+np_out = np_split(x, axis=-1, num_outputs=8)
 print("Numpy:", time.time() - start_time, "seconds")
 
 start_time = time.time()
 split_op.axis = -1
-split_op.num_outputs = 36
+split_op.num_outputs = 8
 kp_out = split_op.run(x)
 print(f"{split_op}: ", time.time() - start_time, "seconds")
 
@@ -84,9 +84,9 @@ for i in range(len(np_out)):
     print(np.allclose(np_out[i], kp_out[i], rtol=1e-4, atol=1e-4))
 print('----')
 
-print("Case 4: split, axis is -2, num_outputs is 1")
+print("Case 4: split with zero, axis is 2")
 split = np.array([2, 0, 4, 2], dtype=np.int64)
-axis = -2
+axis = 2
 
 start_time = time.time()
 np_out = np_split(x, split=split, axis=axis, num_outputs=1)
@@ -102,4 +102,23 @@ for i in range(len(np_out)):
     if 0 not in np_out[i].shape:
         print("Max error:", np.abs(np_out[i] - kp_out[i]).max())
     print(np.allclose(np_out[i], kp_out[i], rtol=1e-4, atol=1e-4))
+print('----')
+
+print("Case 5: all splits are zero")
+split = np.array([0, 0, 0, 0, 0, 0, 0, 0], dtype=np.int64)  # 全0
+axis = 2
+
+start_time = time.time()
+np_out = np_split(x, split=split, axis=axis, num_outputs=1)
+print("Numpy:", time.time() - start_time, "seconds")
+
+start_time = time.time()
+split_op.axis = axis
+split_op.num_outputs = 1
+kp_out = split_op.run(x, split)
+print(f"{split_op}: ", time.time() - start_time, "seconds")
+
+for i in range(len(np_out)):
+    print("shape:", kp_out[i].shape)
+    print(np.array_equal(np_out[i], kp_out[i]))
 print('----')

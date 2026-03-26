@@ -1,7 +1,7 @@
 import time
 import numpy as np
 from kp import Manager
-from kp_onnx.kop_feature_vectorizer import FeatureVectorizerOp
+from kp_onnx_ssbo.kop_feature_vectorizer import FeatureVectorizerOp
 
 device_id = 0
 mgr = Manager(device_id)
@@ -36,7 +36,7 @@ print("Case 1:")
 # Case 1: two 2D inputs, truncation and padding
 data1 = np.array([[1, 2, 3], [4, 5, 6]]).astype(np.float32)
 data2 = np.array([[7, 8, 9], [10, 11, 12]]).astype(np.float32)
-inputdimensions = [-3, 5]  # truncate data1 to 4, pad data2 to 5
+inputdimensions = [0, 0]  # truncate data1 to 2, pad data2 to 5
 
 start_time = time.time()
 np_out = _run(data1, data2, inputdimensions=inputdimensions)
@@ -45,6 +45,7 @@ print("Numpy:", time.time() - start_time, "seconds")
 start_time = time.time()
 feature_vectorizer_op.inputdimensions = inputdimensions
 kp_out = feature_vectorizer_op.run(data1, data2)[0]
+print("kp_out:", kp_out)
 print(f"{feature_vectorizer_op}: ", time.time() - start_time, "seconds")
 
 # print("Max error:", np.abs(np_out - kp_out).max())
@@ -55,7 +56,7 @@ print("----")
 print("Case 2:")
 data1 = np.random.random((5,)).astype(np.float32)
 data2 = np.random.random((5, 2)).astype(np.float32)
-inputdimensions = [2, 3]
+inputdimensions = [-1, 3]
 
 start_time = time.time()
 np_out = _run(data1, data2, inputdimensions=inputdimensions)
@@ -75,7 +76,7 @@ print("Case 3:")
 data1 = np.random.random((3, 1)).astype(np.float32)
 data2 = np.random.random((3, 4)).astype(np.float32)
 data3 = np.random.random((3,)).astype(np.float32)
-inputdimensions = [20, 4, 5]
+inputdimensions = [20, -1, 5]
 
 start_time = time.time()
 np_out = _run(data1, data2, data3, inputdimensions=inputdimensions)

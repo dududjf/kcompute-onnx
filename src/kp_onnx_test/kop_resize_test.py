@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_resize import ResizeOp
+from kp_onnx_ssbo.kop_resize import ResizeOp
 from typing import Any, Callable
 
 device_id = 0
@@ -512,12 +512,13 @@ nearest_mode = "floor"
 
 start_time = time.time()
 np_out = onnx_resize(x, roi=roi, scales=scales, coordinate_transformation_mode=coordinate_transformation_mode, mode=mode,
-                     nearest_mode=nearest_mode)
+                     axes=[0, 1], nearest_mode=nearest_mode)
 print("NumPy:", time.time() - start_time, "seconds")
 
 start_time = time.time()
 resize_op = ResizeOp(mgr, coordinate_transformation_mode=coordinate_transformation_mode, mode=mode,
                      nearest_mode=nearest_mode)
+resize_op.axes = [0, 1]
 kp_out = resize_op.run(x, roi, scales)
 print(f"{resize_op}: ", time.time() - start_time, "seconds")
 

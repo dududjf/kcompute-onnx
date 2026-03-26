@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_gru import GruOp
+from kp_onnx_ssbo.kop_gru import GruOp
 
 device_id = 0
 mgr = Manager(device_id)
@@ -267,9 +267,13 @@ R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.f
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru(X, W, R, B=B, initial_h=initial_h, layout=0, linear_before_reset=0)
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=0, linear_before_reset=0)
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -285,9 +289,13 @@ R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.f
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru(X, W, R, B=B, initial_h=initial_h, layout=0, linear_before_reset=1)
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=0, linear_before_reset=1)
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -301,9 +309,13 @@ X = np.random.random((seq_length, batch_size, input_size)).astype(np.float32)
 W = np.random.random((num_directions, 3 * hidden_size, input_size)).astype(np.float32)
 R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru(X, W, R, B=None, initial_h=None, layout=0, linear_before_reset=0)
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=0, linear_before_reset=0)
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, None, None, None)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -318,9 +330,13 @@ W = np.random.random((num_directions, 3 * hidden_size, input_size)).astype(np.fl
 R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.float32)
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru(X, W, R, B=B, initial_h=None, layout=0, linear_before_reset=0)
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=0, linear_before_reset=0)
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, None)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -335,9 +351,13 @@ W = np.random.random((num_directions, 3 * hidden_size, input_size)).astype(np.fl
 R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru(X, W, R, B=None, initial_h=initial_h, layout=0, linear_before_reset=0)
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=0, linear_before_reset=0)
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, None, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -353,9 +373,13 @@ R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.f
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru(X, W, R, B=B, initial_h=initial_h, layout=1, linear_before_reset=0)
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=1, linear_before_reset=0)
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -371,9 +395,13 @@ R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.f
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru(X, W, R, B=B, initial_h=initial_h, layout=1, linear_before_reset=1)
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=1, linear_before_reset=1)
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -388,10 +416,14 @@ X = np.random.random((seq_length, batch_size, input_size)).astype(np.float32)
 W = np.random.random((num_directions, 3 * hidden_size, input_size)).astype(np.float32)
 R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru_bidirectional(X, W, R, B=None, initial_h=None, layout=0, linear_before_reset=0,
                                       direction='reverse')
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=0, linear_before_reset=0, direction='reverse')
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, None, None, None)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -409,10 +441,14 @@ R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.f
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru_bidirectional(X, W, R, B=B, initial_h=initial_h, layout=1, linear_before_reset=1,
                                       direction='reverse')
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=1, linear_before_reset=1, direction='reverse')
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -429,10 +465,14 @@ X = np.random.random((batch_size, seq_length, input_size)).astype(np.float32)  #
 W = np.random.random((num_directions, 3 * hidden_size, input_size)).astype(np.float32)
 R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru_bidirectional(X, W, R, B=None, initial_h=None, layout=1, linear_before_reset=0,
                                       direction='bidirectional')
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=1, linear_before_reset=0, direction='bidirectional')
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, None, None, None)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -449,10 +489,14 @@ R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.f
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru_bidirectional(X, W, R, B=B, initial_h=initial_h, layout=0, linear_before_reset=0,
                                       direction='bidirectional')
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=0, linear_before_reset=0, direction='bidirectional')
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -469,10 +513,14 @@ R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.f
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru_bidirectional(X, W, R, B=B, initial_h=initial_h, layout=0, linear_before_reset=1,
                                       direction='bidirectional')
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=0, linear_before_reset=1, direction='bidirectional')
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))
@@ -489,10 +537,14 @@ R = np.random.random((num_directions, 3 * hidden_size, hidden_size)).astype(np.f
 B = np.random.random((num_directions, 6 * hidden_size)).astype(np.float32)
 initial_h = np.random.random((num_directions, batch_size, hidden_size)).astype(np.float32)
 
+start_time = time.time()
 np_Y, np_Y_h = onnx_gru_bidirectional(X, W, R, B=B, initial_h=initial_h, layout=1, linear_before_reset=0,
                                       direction='bidirectional')
+print("NumPy:", np_Y.shape, time.time() - start_time, "seconds")
 gru_op = GruOp(mgr, hidden_size=hidden_size, layout=1, linear_before_reset=0, direction='bidirectional')
+start_time = time.time()
 kp_Y, kp_Y_h = gru_op.run(X, W, R, B, None, initial_h)
+print(f"{gru_op}:", kp_Y.shape, time.time() - start_time, "seconds")
 
 print("Y allclose:", np.allclose(np_Y, kp_Y, rtol=1e-4, atol=1e-4))
 print("Y_h allclose:", np.allclose(np_Y_h, kp_Y_h, rtol=1e-4, atol=1e-4))

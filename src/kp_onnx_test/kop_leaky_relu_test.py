@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_leaky_relu import LeakyReluOp
+from kp_onnx_ssbo.kop_leaky_relu import LeakyReluOp
 
 device_id = 0
 mgr = Manager(device_id)

@@ -1,7 +1,7 @@
+from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_where import WhereOp
-from kp import Manager
+from kp_onnx_ssbo.kop_where import WhereOp
 
 device_id = 0
 mgr = Manager(device_id)

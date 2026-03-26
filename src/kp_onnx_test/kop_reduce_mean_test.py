@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_reduce_mean import ReduceMeanOp
+from kp_onnx_ssbo.kop_reduce_mean import ReduceMeanOp
 
 # Device
 device_id = 0
@@ -115,8 +115,8 @@ print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
 print("----")
 
 # -------- Case 5 --------
-print("Case 5 for keepdims and not noop_with_empty_axes: axes is [0,2]")
-axes = np.array([0, 2], dtype=np.int32)
+print("Case 5 for keepdims and not noop_with_empty_axes: axes is [-3,2]")
+axes = np.array([-3, 2], dtype=np.int32)
 start_time = time.time()
 np_out = np_mean(x, axes, keepdims=True, noop_with_empty_axes=False)
 print("Numpy:", time.time() - start_time, "seconds")

@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_global_max_pool import GlobalMaxPoolOp
+from kp_onnx_ssbo.kop_global_max_pool import GlobalMaxPoolOp
 
 
 # ONNX的GAP实现

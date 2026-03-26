@@ -21,14 +21,14 @@ layout(constant_id = 2) const float out_axis_dim_f = 0.0;
 void main() {
     uint row_idx = gl_GlobalInvocationID.x;
     uint col_idx = gl_GlobalInvocationID.y;
-    
+
     uint input_width = uint(input_width_f);
     uint out_axis_offset = uint(out_axis_offset_f);
     uint out_axis_dim = uint(out_axis_dim_f);
-    
+
     uint in_offset = row_idx * input_width + col_idx;
     uint out_offset = row_idx * out_axis_dim + out_axis_offset + col_idx;
-    
+
     out_tensor[out_offset] = col_idx < input_width ? in_tensor[in_offset] : 0.0;
 }
 """)

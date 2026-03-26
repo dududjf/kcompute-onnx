@@ -1,7 +1,7 @@
 import numpy as np
 from kp import Manager
 import time
-from kp_onnx.kop_label_encoder import LabelEncoderOp
+from kp_onnx_ssbo.kop_label_encoder import LabelEncoderOp
 
 device_id = 0
 mgr = Manager(device_id)

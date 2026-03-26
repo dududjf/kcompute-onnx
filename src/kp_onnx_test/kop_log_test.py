@@ -1,7 +1,7 @@
 import numpy as np
 import time
 from kp import Manager
-from kp_onnx.kop_log import LogOp
+from kp_onnx_ssbo.kop_log import LogOp
 
 device_id = 1
 mgr = Manager(device_id)

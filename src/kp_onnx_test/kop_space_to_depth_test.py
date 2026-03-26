@@ -1,7 +1,7 @@
 import numpy as np
 from kp import Manager
 import time
-from kp_onnx.kop_space_to_depth import SpaceToDepthOp
+from kp_onnx_ssbo.kop_space_to_depth import SpaceToDepthOp
 
 device_id = 0
 mgr = Manager(device_id)

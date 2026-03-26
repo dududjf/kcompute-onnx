@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_log_softmax import LogSoftmaxOp
+from kp_onnx_ssbo.kop_log_softmax import LogSoftmaxOp
 
 
 # Reference implementation matching ONNX spec

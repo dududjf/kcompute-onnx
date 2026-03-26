@@ -3,7 +3,7 @@
   python scripts/check_coverage.py                     # 检查所有算子
   python scripts/check_coverage.py kop_acos kop_gru    # 检查指定(一个 / 多个)算子
   可选参数: --no-html: 不生成HTML报告(默认生成)  --no-branch: 禁用分支覆盖率(默认启用)
-  输出目录: coverage_report/html/index.html (报告) | coverage_report/static/ (资源)
+  输出目录: coverage_report/html/index.html (报告) | coverage_report/static/ (页面静态资源)
 """
 import argparse, sys, shutil, runpy, coverage
 from pathlib import Path
@@ -49,13 +49,22 @@ def run(test_files, modules=None, branch=True, html=True):
         cov.html_report(directory=str(temp), include=inc)
         shutil.rmtree(html_dir, ignore_errors=True); html_dir.mkdir(parents=True)
 
-        assets, htmls = [], [f for f in temp.iterdir() if f.suffix == ".html" and f.name not in ("class_index.html", "function_index.html")]
+        assets, htmls, renames = [], [], {}
         for f in temp.iterdir():
-            if f.suffix != ".html": assets.append(f.name); shutil.copy2(f, static / f.name)
+            if f.suffix == ".html" and f.name not in ("class_index.html", "function_index.html"):
+                htmls.append(f)
+                # 去掉 z_xxxxxxxx_ 前缀
+                if f.name.startswith("z_") and f.name.count("_") >= 2:
+                    new_name = f.name.split("_", 2)[2]
+                    renames[f.name] = new_name
+            elif f.suffix != ".html":
+                assets.append(f.name); shutil.copy2(f, static / f.name)
         for f in htmls:
             c = f.read_text(encoding="utf-8")
             for a in assets: c = c.replace(f'"{a}"', f'"../static/{a}"')
-            (html_dir / f.name).write_text(c, encoding="utf-8")
+            for old, new in renames.items(): c = c.replace(f'"{old}"', f'"{new}"')
+            out_name = renames.get(f.name, f.name)
+            (html_dir / out_name).write_text(c, encoding="utf-8")
         shutil.rmtree(temp)
         print(f"\nHTML 报告: {html_dir / 'index.html'}\n数据文件: {data_file}")
     return passed

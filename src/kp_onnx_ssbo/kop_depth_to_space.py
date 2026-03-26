@@ -18,17 +18,17 @@ layout(std430, set=0, binding=2) readonly  buffer UIParams {{ uint params[]; }};
 
 void main() 
 {{
-    uint pre_block_size = params[0], leading_size = params[1], axis_dimension = params[2], post_block_size = params[3];
+    uint leading_size = params[0], pre_block_size = params[1], axis_dimension = params[2], post_block_size = params[3];
 
-    uint gx = gl_GlobalInvocationID.x;
-    uint gy = gl_GlobalInvocationID.y;
-    uint gz = gl_GlobalInvocationID.z;
-    if (gx >= leading_size || gy >= pre_block_size || gz >= axis_dimension) return;
+    uint leading_idx = gl_GlobalInvocationID.x;
+    uint pre_idx = gl_GlobalInvocationID.y;
+    uint axis_idx = gl_GlobalInvocationID.z;
+    if (leading_idx >= leading_size || pre_idx >= pre_block_size || axis_idx >= axis_dimension) return;
 
     uint stride_y = axis_dimension * post_block_size;
     uint stride_x = pre_block_size * stride_y;
-    uint in_index = gx * stride_x + gy * stride_y + gz * post_block_size;
-    uint out_index = gx * stride_x + gz * pre_block_size * post_block_size + gy * post_block_size;
+    uint in_index = leading_idx * stride_x + pre_idx * stride_y + axis_idx * post_block_size;
+    uint out_index = leading_idx * stride_x + axis_idx * pre_block_size * post_block_size + pre_idx * post_block_size;
 
     for (uint i = 0; i < post_block_size; ++i, ++out_index, ++in_index)
         out_buf[out_index] = in_buf[in_index];
@@ -104,7 +104,7 @@ void main()
                     j += 1
                 axis_dimension = shape_out[i]
 
-                params = np.array([pre_block_size, leading_size, axis_dimension, post_block_size], dtype=np.uint32)
+                params = np.array([leading_size, pre_block_size, axis_dimension, post_block_size], dtype=np.uint32)
                 param_in = self.manager.tensor_t(params, kp.TensorTypes.device)
                 self.manager.sequence().record(kp.OpTensorSyncDevice([param_in])).eval()
 

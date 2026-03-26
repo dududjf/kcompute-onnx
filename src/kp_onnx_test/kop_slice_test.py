@@ -1,7 +1,7 @@
 import numpy as np
 from kp import Manager
 import time
-from kp_onnx.kop_slice import SliceOp
+from kp_onnx_ssbo.kop_slice import SliceOp
 
 device_id = 0
 mgr = Manager(device_id)
@@ -49,7 +49,7 @@ x = np.random.random((32, 32, 8, 32)).astype(np.float32)
 
 print("Case 1: not axes, not steps")
 starts = np.array([2, 0, 0], dtype=np.int64)
-ends = np.array([30, 12, 0], dtype=np.int64)
+ends = np.array([30, 12, 8], dtype=np.int64)
 
 start_time = time.time()
 np_out = np_slice(x, starts=starts, ends=ends)
@@ -69,11 +69,11 @@ ends = np.array([-1, 4, -1], dtype=np.int64)
 axes = np.array([0, 1, -1], dtype=np.int64)
 
 start_time = time.time()
-np_out = np_slice(x, starts=starts, ends=ends)
+np_out = np_slice(x, starts=starts, ends=ends, axes=axes)
 print("Numpy:", time.time() - start_time, "seconds")
 
 start_time = time.time()
-kp_out = slice_op.run(x, starts, ends)[0]
+kp_out = slice_op.run(x, starts, ends, axes)[0]
 print(f"{slice_op}: ", time.time() - start_time, "seconds")
 
 print("Max error:", np.abs(np_out - kp_out).max())
@@ -97,3 +97,24 @@ print(f"{slice_op}: ", time.time() - start_time, "seconds")
 print("Max error:", np.abs(np_out - kp_out).max())
 print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
 print('----')
+
+print("Case 4: with steps")
+starts = np.array([0], dtype=np.int64)
+ends = np.array([30], dtype=np.int64)
+axes = np.array([0], dtype=np.int64)
+steps = np.array([2], dtype=np.int64)
+
+np_out = np_slice(x, starts=starts, ends=ends, axes=axes, steps=steps)
+kp_out = slice_op.run(x, starts, ends, axes, steps)[0]
+print("Max error:", np.abs(np_out - kp_out).max())
+print(np.allclose(np_out, kp_out))
+
+print("Case 5: empty slice")
+starts = np.array([5], dtype=np.int64)
+ends = np.array([5], dtype=np.int64)  # start==end → 空
+axes = np.array([0], dtype=np.int64)
+
+np_out = np_slice(x, starts=starts, ends=ends, axes=axes)
+kp_out = slice_op.run(x, starts, ends, axes)[0]
+print("shape:", kp_out.shape)
+print("Equal:", np.array_equal(np_out, kp_out))

@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_lp_normalization import LpNormalizationOp
+from kp_onnx_ssbo.kop_lp_normalization import LpNormalizationOp
 
 # Device
 device_id = 0

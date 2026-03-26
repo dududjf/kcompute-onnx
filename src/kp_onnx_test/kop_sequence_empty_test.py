@@ -1,7 +1,7 @@
 import time
 import numpy as np
 from kp import Manager
-from kp_onnx.kop_sequence_empty import SequenceEmptyOp
+from kp_onnx_ssbo.kop_sequence_empty import SequenceEmptyOp
 
 device_id = 0
 mgr = Manager(device_id)

@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_hardmax import HardmaxOp
+from kp_onnx_ssbo.kop_hardmax import HardmaxOp
 
 
 def numpy_hardmax(x: np.ndarray, axis: int = -1) -> np.ndarray:

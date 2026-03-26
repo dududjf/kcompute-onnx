@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_softplus import SoftplusOp
+from kp_onnx_ssbo.kop_softplus import SoftplusOp
 
 # Device info
 device_id = 0

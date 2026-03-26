@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_reciprocal import ReciprocalOp
+from kp_onnx_ssbo.kop_reciprocal import ReciprocalOp
 
 device_id = 0
 mgr = Manager(device_id)

@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_matmul import MatMulOp
+from kp_onnx_ssbo.kop_matmul import MatMulOp
 
 device_id = 1
 mgr = Manager(device_id)

@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_reduce_sum_square import ReduceSumSquareOp
+from kp_onnx_ssbo.kop_reduce_sum_square import ReduceSumSquareOp
 
 # Device
 device_id = 0

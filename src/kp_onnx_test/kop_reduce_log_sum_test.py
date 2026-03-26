@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_reduce_log_sum import ReduceLogSumOp
+from kp_onnx_ssbo.kop_reduce_log_sum import ReduceLogSumOp
 
 # Device
 device_id = 0

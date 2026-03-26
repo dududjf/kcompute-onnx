@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="1c01bd31-8f09-45b3-9b28-317ce7e4a228" name="Changes" comment="Modified kop_imputer.py">
+      <change beforePath="$PROJECT_DIR$/scripts/check_coverage.py" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/check_coverage.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx/kop_feature_vectorizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx/kop_feature_vectorizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_col2im_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_col2im_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_feature_vectorizer_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_feature_vectorizer_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_global_max_pool_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_global_max_pool_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_hardmax_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_hardmax_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_imputer_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_imputer_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_label_encoder_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_label_encoder_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_leaky_relu_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_leaky_relu_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_log_softmax_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_log_softmax_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_log_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_log_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/kp_onnx_test/kop_lp_normalization_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/kp_onnx_test/kop_lp_normalization_test.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="31BCPE3stiDomyqPjQ94MHUKfm0" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/LLM4DB/kcompute-onnx/src/kp_onnx_ssbo/kop_label_encoder.py&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;two.files.diff.last.used.file&quot;: &quot;D:/LLM4DB/kcompute-onnx/src/kp_onnx_ssbo/kop_label_encoder.py&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\LLM4DB\kcompute-onnx\src\kp_onnx_ssbo" />
+      <recent name="D:\LLM4DB\kcompute-onnx\src\kp_onnx" />
+      <recent name="D:\LLM4DB\kcompute-onnx\src" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\LLM4DB\kcompute-onnx\src\kp_onnx_test" />
+      <recent name="D:\LLM4DB\kcompute-onnx\src\kp_onnx" />
+      <recent name="D:\LLM4DB\kcompute-onnx\src" />
+      <recent name="D:\LLM4DB\kcompute-onnx" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Python.kop_col2im_test">
+    <configuration name="kop_col2im_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="kcompute-onnx" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/kp_onnx_test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/kp_onnx_test/kop_col2im_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="kop_imputer_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="kcompute-onnx" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/kp_onnx_test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/kp_onnx_test/kop_imputer_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="kop_one_hot_encoder_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="kcompute-onnx" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/kp_onnx_test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/kp_onnx_test/kop_one_hot_encoder_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="kop_one_hot_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="kcompute-onnx" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/kp_onnx_test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/kp_onnx_test/kop_one_hot_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="kop_unique_test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="kcompute-onnx" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/src/kp_onnx_test" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/src/kp_onnx_test/kop_unique_test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.kop_col2im_test" />
+        <item itemvalue="Python.kop_imputer_test" />
+        <item itemvalue="Python.kop_unique_test" />
+        <item itemvalue="Python.kop_one_hot_encoder_test" />
+        <item itemvalue="Python.kop_one_hot_test" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="1c01bd31-8f09-45b3-9b28-317ce7e4a228" name="Changes" comment="" />
+      <created>1754988054641</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1754988054641</updated>
+      <workItem from="1754988062209" duration="27921000" />
+      <workItem from="1755081748506" duration="36265000" />
+      <workItem from="1755518156002" duration="4370000" />
+      <workItem from="1755604552782" duration="11803000" />
+      <workItem from="1755765086183" duration="47515000" />
+      <workItem from="1756115235398" duration="84431000" />
+      <workItem from="1756632027761" duration="4959000" />
+      <workItem from="1756645490008" duration="6443000" />
+      <workItem from="1756698772798" duration="123875000" />
+      <workItem from="1757856948922" duration="73768000" />
+      <workItem from="1758456178202" duration="1723000" />
+      <workItem from="1758530895673" duration="342000" />
+      <workItem from="1758608630832" duration="25381000" />
+      <workItem from="1758867467554" duration="31636000" />
+      <workItem from="1759151791724" duration="162000" />
+      <workItem from="1759151973730" duration="52253000" />
+      <workItem from="1759659370374" duration="9593000" />
+      <workItem from="1760255655392" duration="325000" />
+      <workItem from="1760256008553" duration="3998000" />
+      <workItem from="1760268507165" duration="422000" />
+      <workItem from="1760268951531" duration="20659000" />
+      <workItem from="1760354010374" duration="34070000" />
+      <workItem from="1760443077547" duration="9490000" />
+      <workItem from="1760514107509" duration="673000" />
+      <workItem from="1760861581583" duration="47612000" />
+      <workItem from="1761009750018" duration="192000" />
+      <workItem from="1761011321507" duration="144008000" />
+      <workItem from="1761989765486" duration="30249000" />
+      <workItem from="1762412490137" duration="98648000" />
+      <workItem from="1763897598774" duration="156065000" />
+      <workItem from="1766479154881" duration="8342000" />
+      <workItem from="1766924800321" duration="16476000" />
+      <workItem from="1767690074907" duration="6726000" />
+      <workItem from="1768308782212" duration="5009000" />
+      <workItem from="1768813428278" duration="993000" />
+      <workItem from="1768901136868" duration="14831000" />
+      <workItem from="1769244897401" duration="8017000" />
+      <workItem from="1769426961824" duration="12000" />
+      <workItem from="1769502142906" duration="5786000" />
+      <workItem from="1770109481893" duration="6230000" />
+    </task>
+    <task id="LOCAL-00001" summary="Add kop_leaky_relu.py and leaky_relu.py to the repo">
+      <created>1754990134210</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1754990134210</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Add some new files">
+      <created>1763975513894</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1763975513894</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Modified kop_imputer.py">
+      <created>1765185357835</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1765185357835</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Add kop_leaky_relu.py and leaky_relu.py to the repo" />
+    <MESSAGE value="Add some new files" />
+    <MESSAGE value="Modified kop_imputer.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Modified kop_imputer.py" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_array_feature_extractor_test.coverage" NAME="kop_array_feature_extractor_test Coverage Results" MODIFIED="1764078788403" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$slice_test.coverage" NAME="slice_test Coverage Results" MODIFIED="1760435887731" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_reducemean_test.coverage" NAME="kop_reducemean_test Coverage Results" MODIFIED="1756215089340" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_lp_normalization_test.coverage" NAME="kop_lp_normalization_test Coverage Results" MODIFIED="1759247406772" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$split_test.coverage" NAME="split_test Coverage Results" MODIFIED="1758033972526" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_rms_normalization_test.coverage" NAME="kop_rms_normalization_test Coverage Results" MODIFIED="1760450023916" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_shrink_test.coverage" NAME="kop_shrink_test Coverage Results" MODIFIED="1756030577783" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_unique_test.coverage" NAME="kop_unique_test Coverage Results" MODIFIED="1764683281071" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_leaky_relu_test.coverage" NAME="kop_leaky_relu_test Coverage Results" MODIFIED="1755006294551" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$reduce_log_sum_test.coverage" NAME="reduce_log_sum_test Coverage Results" MODIFIED="1758027286948" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_col2im_test.coverage" NAME="kop_col2im_test Coverage Results" MODIFIED="1767103670066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_acos_test.coverage" NAME="kop_acos_test Coverage Results" MODIFIED="1755771965690" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_elu_test.coverage" NAME="kop_elu_test Coverage Results" MODIFIED="1755676878598" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$where_test.coverage" NAME="where_test Coverage Results" MODIFIED="1758026341440" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_upsample_test.coverage" NAME="kop_upsample_test Coverage Results" MODIFIED="1758634609132" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$rms_normalization_test.coverage" NAME="rms_normalization_test Coverage Results" MODIFIED="1760347401986" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_asin_test.coverage" NAME="kop_asin_test Coverage Results" MODIFIED="1755676181837" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_prelu_test.coverage" NAME="kop_prelu_test Coverage Results" MODIFIED="1756216000985" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_cosh_test.coverage" NAME="kop_cosh_test Coverage Results" MODIFIED="1755677790897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$affine_grid_test.coverage" NAME="affine_grid_test Coverage Results" MODIFIED="1760444098734" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$reduce_l2_test.coverage" NAME="reduce_l2_test Coverage Results" MODIFIED="1758027344168" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_clip_test.coverage" NAME="kop_clip_test Coverage Results" MODIFIED="1755677227177" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_batchnormalization_training_mode_test.coverage" NAME="kop_batchnormalization_training_mode_test Coverage Results" MODIFIED="1761660443374" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_one_hot_test.coverage" NAME="kop_one_hot_test Coverage Results" MODIFIED="1764252635148" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$topk_test.coverage" NAME="topk_test Coverage Results" MODIFIED="1759669449580" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_feature_vectorizer_test.coverage" NAME="kop_feature_vectorizer_test Coverage Results" MODIFIED="1764078980949" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$depth_to_space_test.coverage" NAME="depth_to_space_test Coverage Results" MODIFIED="1759667596433" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_imputer_test.coverage" NAME="kop_imputer_test Coverage Results" MODIFIED="1765289963104" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$split_to_sequence.coverage" NAME="split_to_sequence Coverage Results" MODIFIED="1758033822403" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$concat_test.coverage" NAME="concat_test Coverage Results" MODIFIED="1760963503514" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_tile_test.coverage" NAME="kop_tile_test Coverage Results" MODIFIED="1756214545219" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_pow_test.coverage" NAME="kop_pow_test Coverage Results" MODIFIED="1758273026254" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_identity_test.coverage" NAME="kop_identity_test Coverage Results" MODIFIED="1755676884244" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_log_test.coverage" NAME="kop_log_test Coverage Results" MODIFIED="1755676892565" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$unique_test.coverage" NAME="unique_test Coverage Results" MODIFIED="1759235508977" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_concat_from_sequence_test.coverage" NAME="kop_concat_from_sequence_test Coverage Results" MODIFIED="1761140797748" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_split_test.coverage" NAME="kop_split_test Coverage Results" MODIFIED="1759240713544" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_one_hot_encoder_test.coverage" NAME="kop_one_hot_encoder_test Coverage Results" MODIFIED="1764252788858" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_batchnormalization_test_mode_test.coverage" NAME="kop_batchnormalization_test_mode_test Coverage Results" MODIFIED="1761660391854" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_asin_test__1_.coverage" NAME="kop_asin_test (1) Coverage Results" MODIFIED="1755606306206" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_affine_grid_test.coverage" NAME="kop_affine_grid_test Coverage Results" MODIFIED="1760868485552" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$compress_test.coverage" NAME="compress_test Coverage Results" MODIFIED="1757422589229" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/temp_test" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$kop_asin.coverage" NAME="kop_asin Coverage Results" MODIFIED="1755606168919" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/kp_onnx" />
+    <SUITE FILE_PATH="coverage/kcompute_onnx$space_to_depth_test.coverage" NAME="space_to_depth_test Coverage Results" MODIFIED="1760342586063" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/src/onnx/reference/ops_optimized/temp_test" />
+  </component>
+</project>

@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx.kop_reduce_log_sum_exp import ReduceLogSumExpOp
+from kp_onnx_ssbo.kop_reduce_log_sum_exp import ReduceLogSumExpOp
 
 # Device
 device_id = 0
@@ -9,7 +9,6 @@ mgr = Manager(device_id)
 print(mgr.get_device_properties())
 
 reduce_log_sum_exp_op = ReduceLogSumExpOp(mgr)
-x = np.random.random((255, 1024, 1024)).astype(np.float32)
 
 
 def handle_axes(axes):
@@ -55,8 +54,10 @@ def np_reduce_log_sum_exp(data, axes=None, keepdims=True, noop_with_empty_axes=F
         res = np.squeeze(res, axis=axes)
     return res
 
+
 # -------- Case 1 --------
 print("Case 1 for keepdims and not noop_with_empty_axes: axis is None")
+x = np.random.random((255, 1024, 1024)).astype(np.float32)
 start_time = time.time()
 np_out = np_reduce_log_sum_exp(x, keepdims=True, noop_with_empty_axes=False)
 print("Numpy:", time.time() - start_time, "seconds")
@@ -90,15 +91,17 @@ print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
 print("----")
 
 # -------- Case 3 --------
-print("Case 3 for keepdims and noop_with_empty_axes: axes is None")
+print("Case 3 for keepdims and noop_with_empty_axes: axes is 0")
+x = np.random.random((32, 1024)).astype(np.float32)
+axes = np.array([0], dtype=np.int32)
 start_time = time.time()
-np_out = np_reduce_log_sum_exp(x, keepdims=True, noop_with_empty_axes=True)
+np_out = np_reduce_log_sum_exp(x, axes, keepdims=True, noop_with_empty_axes=True)
 print("Numpy:", time.time() - start_time, "seconds")
 
 start_time = time.time()
 reduce_log_sum_exp_op.keepdims = True
 reduce_log_sum_exp_op.noop_with_empty_axes = True
-kp_out = reduce_log_sum_exp_op.run(x, None)[0]
+kp_out = reduce_log_sum_exp_op.run(x, axes)[0]
 print(f"{reduce_log_sum_exp_op}:", time.time() - start_time, "seconds")
 
 print("shape equal:", kp_out.shape == np_out.shape)
@@ -108,6 +111,7 @@ print("----")
 
 # -------- Case 4 --------
 print("Case 4 for not keepdims and noop_with_empty_axes: axes is None")
+x = np.random.random((1024,)).astype(np.float32)
 start_time = time.time()
 np_out = np_reduce_log_sum_exp(x, keepdims=False, noop_with_empty_axes=True)
 print("Numpy:", time.time() - start_time, "seconds")
@@ -124,8 +128,9 @@ print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
 print("----")
 
 # -------- Case 5 --------
-print("Case 5 for keepdims and not noop_with_empty_axes: axes is [0,2]")
-axes = np.array([0, 2], dtype=np.int32)
+print("Case 5 for keepdims and not noop_with_empty_axes: axes is [2]")
+x = np.random.random((2, 32, 513, 1024)).astype(np.float32)
+axes = np.array([2], dtype=np.int32)
 start_time = time.time()
 np_out = np_reduce_log_sum_exp(x, axes, keepdims=True, noop_with_empty_axes=False)
 print("Numpy:", time.time() - start_time, "seconds")
@@ -143,6 +148,7 @@ print("----")
 
 # -------- Case 6 --------
 print("Case 6 for not keepdims and not noop_with_empty_axes: axes is (0)")
+x = np.random.random((512, 1024)).astype(np.float32)
 axes = (0, )
 start_time = time.time()
 np_out = np_reduce_log_sum_exp(x, axes, keepdims=False, noop_with_empty_axes=False)
@@ -196,3 +202,41 @@ print(f"{reduce_log_sum_exp_op}: ", time.time() - start_time, "seconds")
 print("shape equal:", kp_out.shape == np_out.shape)
 print("Max error:", np.abs(np_out - kp_out).max())
 print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
+
+# -------- Case 9 --------
+print("Case 9 for keepdims and not noop_with_empty_axes: axes is [0, 2]")
+x = np.random.random((2, 32, 513, 1024)).astype(np.float32)
+axes = np.array([0, 2], dtype=np.int32)
+start_time = time.time()
+np_out = np_reduce_log_sum_exp(x, axes, keepdims=True, noop_with_empty_axes=False)
+print("Numpy:", time.time() - start_time, "seconds")
+
+start_time = time.time()
+reduce_log_sum_exp_op.keepdims = True
+reduce_log_sum_exp_op.noop_with_empty_axes = False
+kp_out = reduce_log_sum_exp_op.run(x, axes)[0]
+print(f"{reduce_log_sum_exp_op}: ", time.time() - start_time, "seconds")
+
+print("shape equal:", kp_out.shape == np_out.shape)
+print("Max error:", np.abs(np_out - kp_out).max())
+print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
+print("----")
+
+# -------- Case 10 --------
+print("Case 10 for not keepdims and not noop_with_empty_axes: axes is (0)")
+x = np.random.random((1024,)).astype(np.float32)
+axes = (0, )
+start_time = time.time()
+np_out = np_reduce_log_sum_exp(x, axes, keepdims=False, noop_with_empty_axes=False)
+print("Numpy:", time.time() - start_time, "seconds")
+
+start_time = time.time()
+reduce_log_sum_exp_op.keepdims = False
+reduce_log_sum_exp_op.noop_with_empty_axes = False
+kp_out = reduce_log_sum_exp_op.run(x, axes)[0]
+print(f"{reduce_log_sum_exp_op}: ", time.time() - start_time, "seconds")
+
+print("shape equal:", kp_out.shape == np_out.shape)
+print("Max error:", np.abs(np_out - kp_out).max())
+print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
+print("----")

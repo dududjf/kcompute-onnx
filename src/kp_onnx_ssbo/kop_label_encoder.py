@@ -1,0 +1,248 @@
+import numpy as np
+import kp
+from .shader_utils import compile_source, LOCAL_X_1D
+
+
+class LabelEncoderOp:
+    def __init__(self, manager: kp.Manager, 
+                 default_float=-0.0, 
+                 default_int64=-1,
+                 default_string='_Unused',
+                 default_tensor=None,
+                 keys_floats=None, 
+                 keys_int64s=None,
+                 keys_strings=None,
+                 keys_tensor=None,
+                 values_floats=None, 
+                 values_int64s=None,
+                 values_strings=None,
+                 values_tensor=None):
+        self.manager = manager
+        self.default_float = default_float
+        self.default_int64 = default_int64
+        self.default_string = default_string
+        self.default_tensor = default_tensor
+        
+        # Preprocess keys and values: sort and deduplicate (keep last value for duplicate keys)
+        # Priority: floats > int64s > strings > tensor (consistent with ONNX spec)
+        self.sorted_keys = None
+        self.sorted_values = None
+        self.dtype = None
+        self.default_value = None
+        
+        self._preprocess_keys_values(keys_floats, keys_int64s, keys_strings, keys_tensor,
+                                     values_floats, values_int64s, values_strings, values_tensor,
+                                     default_float, default_int64, default_tensor)
+        
+        # Float shader with binary search
+        self.compiled_shader_float = compile_source(f"""
+#version 450
+layout(local_size_x = {LOCAL_X_1D}) in;
+
+layout(std430, set = 0, binding = 0) readonly  buffer InBuf     {{ float in_tensor[];     }};
+layout(std430, set = 0, binding = 1) readonly  buffer KeysBuf    {{ float keys_buf[];      }};
+layout(std430, set = 0, binding = 2) readonly  buffer ValuesBuf  {{ float values_buf[];    }};
+layout(std430, set = 0, binding = 3) writeonly buffer OutBuf     {{ float out_tensor[];    }};
+layout(std430, set = 0, binding = 4) readonly  buffer UIParams   {{ uint params[]; }};
+
+void main() {{
+    uint gx = gl_GlobalInvocationID.x;
+    uint total_size = params[0];
+    uint num_mappings = params[1];
+    
+    if(gx >= total_size) return;
+    
+    float input_val = in_tensor[gx];
+    float default_value = uintBitsToFloat(params[2]);
+    
+    // Binary search
+    int left = 0;
+    int right = int(num_mappings) - 1;
+    float output_val = default_value;
+    
+    while (left <= right) {{
+        int mid = (left + right) / 2;
+        float key = keys_buf[mid];
+        if (key == input_val) {{
+            output_val = values_buf[mid];
+            break;
+        }} else if (key < input_val) {{
+            left = mid + 1;
+        }} else {{
+            right = mid - 1;
+        }}
+    }}
+    
+    out_tensor[gx] = output_val;
+}}
+""")
+
+        # Int shader with binary search
+        self.compiled_shader_int = compile_source(f"""
+#version 450
+layout(local_size_x = {LOCAL_X_1D}) in;
+
+layout(std430, set = 0, binding = 0) readonly  buffer InBuf     {{ int in_tensor[];      }};
+layout(std430, set = 0, binding = 1) readonly  buffer KeysBuf    {{ int keys_buf[];       }};
+layout(std430, set = 0, binding = 2) readonly  buffer ValuesBuf  {{ int values_buf[];     }};
+layout(std430, set = 0, binding = 3) writeonly buffer OutBuf     {{ int out_tensor[];     }};
+layout(std430, set = 0, binding = 4) readonly  buffer UIParams   {{ uint params[]; }};
+
+void main() {{
+    uint gx = gl_GlobalInvocationID.x;
+    uint total_size = params[0];
+    uint num_mappings = params[1];
+    
+    if(gx >= total_size) return;
+    
+    int input_val = in_tensor[gx];
+    int default_value = int(params[2]);
+    
+    // Binary search
+    int left = 0;
+    int right = int(num_mappings) - 1;
+    int output_val = default_value;
+    
+    while (left <= right) {{
+        int mid = (left + right) / 2;
+        int key = keys_buf[mid];
+        if (key == input_val) {{
+            output_val = values_buf[mid];
+            break;
+        }} else if (key < input_val) {{
+            left = mid + 1;
+        }} else {{
+            right = mid - 1;
+        }}
+    }}
+    
+    out_tensor[gx] = output_val;
+}}
+""")
+
+    def _preprocess_keys_values(self, keys_floats, keys_int64s, keys_strings, keys_tensor,
+                                values_floats, values_int64s, values_strings, values_tensor,
+                                default_float, default_int64, default_tensor):
+        """Preprocess keys and values: sort and deduplicate (keep last value for duplicate keys)."""
+        # Priority: floats > int64s > strings > tensor (consistent with ONNX spec)
+        if keys_floats is not None and len(keys_floats) > 0:
+            keys = np.array(keys_floats, dtype=np.float32)
+            values = np.array(values_floats, dtype=np.float32)
+            self.default_value = default_float
+            self.dtype = np.float32
+        elif keys_int64s is not None and len(keys_int64s) > 0:
+            keys = np.array(keys_int64s, dtype=np.int32)
+            values = np.array(values_int64s, dtype=np.int32)
+            self.default_value = default_int64
+            self.dtype = np.int32
+        elif keys_strings is not None and len(keys_strings) > 0:
+            raise ValueError("String keys are not supported in GPU implementation yet.")
+        elif keys_tensor is not None and values_tensor is not None:
+            keys = keys_tensor.astype(np.float32)
+            values = values_tensor.astype(np.float32)
+            self.default_value = float(default_tensor) if default_tensor is not None else 0.0
+            self.dtype = np.float32
+        else:
+            raise ValueError("Keys must be provided.")
+        
+        # Sort and deduplicate (keep last value for duplicate keys)
+        key_value_map = {}
+        for k, v in zip(keys, values):
+            key_value_map[k] = v
+        self.sorted_keys = np.array(sorted(key_value_map.keys()), dtype=self.dtype)
+        self.sorted_values = np.array([key_value_map[k] for k in self.sorted_keys], dtype=self.dtype)
+
+    def set_keys_values(self, keys_floats=None, keys_int64s=None, keys_strings=None, keys_tensor=None,
+                        values_floats=None, values_int64s=None, values_strings=None, values_tensor=None,
+                        default_float=None, default_int64=None, default_tensor=None):
+        """Update keys and values attributes and reprocess."""
+        if default_float is not None:
+            self.default_float = default_float
+        if default_int64 is not None:
+            self.default_int64 = default_int64
+        if default_tensor is not None:
+            self.default_tensor = default_tensor
+        
+        self._preprocess_keys_values(keys_floats, keys_int64s, keys_strings, keys_tensor,
+                                     values_floats, values_int64s, values_strings, values_tensor,
+                                     self.default_float, self.default_int64, self.default_tensor)
+
+    def __repr__(self):
+        device_name = self.manager.get_device_properties()['device_name']
+        return f"LabelEncoderOp({device_name})"
+
+    __str__ = __repr__
+
+    def run(self, *inputs):
+        input_tensors = []
+        for inp in inputs:
+            numpy_in = inp.reshape(-1).astype(self.dtype)
+            if self.dtype == np.int32:
+                tensor = self.manager.tensor_t(numpy_in)
+            else:
+                tensor = self.manager.tensor(numpy_in)
+            input_tensors.append((tensor, list(inp.shape)))
+
+        updated_algorithms, updated_tensors = [], []
+        output_tensor_and_shape = self.fuse(input_tensors, updated_algorithms, updated_tensors)
+        tensor_out, shape_out = output_tensor_and_shape[0]
+
+        seq = self.manager.sequence()
+        seq.record(kp.OpTensorSyncDevice([input_tensors[0][0]] + updated_tensors))
+        for alg in updated_algorithms:
+            seq.record(kp.OpAlgoDispatch(alg))
+        seq.record(kp.OpTensorSyncLocal([tensor_out]))
+        seq.eval()
+
+        output = tensor_out.data().reshape(shape_out)
+
+        for tensor, _ in input_tensors:
+            del tensor
+        del updated_tensors
+        return [output]
+
+    def fuse(self, input_tensors: list[tuple[kp.Tensor, list[int]]], updated_algorithms: list[kp.Algorithm],
+             updated_tensors: list[kp.Tensor]) -> list[tuple[kp.Tensor, list[int]]]:
+        tensor_in, shape_in = input_tensors[0]
+        
+        assert len(self.sorted_keys) == len(self.sorted_values), \
+            f"Keys and values must have the same length: {len(self.sorted_keys)} != {len(self.sorted_values)}"
+        
+        num_mappings = len(self.sorted_keys)
+        total_size = int(np.prod(shape_in))
+        
+        # Create tensors for keys and values
+        if self.dtype == np.int32:
+            tensor_keys = self.manager.tensor_t(self.sorted_keys)
+            tensor_values = self.manager.tensor_t(self.sorted_values)
+            tensor_out = self.manager.tensor_t(np.zeros(total_size, dtype=np.int32))
+            compiled_shader = self.compiled_shader_int
+        else:
+            tensor_keys = self.manager.tensor(self.sorted_keys)
+            tensor_values = self.manager.tensor(self.sorted_values)
+            tensor_out = self.manager.tensor(np.zeros(total_size, dtype=np.float32))
+            compiled_shader = self.compiled_shader_float
+        
+        updated_tensors.append(tensor_keys)
+        updated_tensors.append(tensor_values)
+        updated_tensors.append(tensor_out)
+
+        # Create parameters tensor with total_size, num_mappings, default_value
+        if self.dtype == np.int32:
+            default_val_uint = np.uint32(self.default_value)
+        else:
+            default_val_uint = np.uint32(np.float32(self.default_value).view(np.uint32))
+        
+        params = np.array([total_size, num_mappings, default_val_uint], dtype=np.uint32)
+        param_in = self.manager.tensor_t(params, kp.TensorTypes.device)
+        self.manager.sequence().record(kp.OpTensorSyncDevice([param_in])).eval()
+        
+        workgroup = ((total_size + LOCAL_X_1D - 1) // LOCAL_X_1D, 1, 1)
+        
+        updated_algorithms.append(self.manager.algorithm(
+            [tensor_in, tensor_keys, tensor_values, tensor_out, param_in],
+            compiled_shader,
+            workgroup,
+        ))
+        
+        return [(tensor_out, shape_in)]
