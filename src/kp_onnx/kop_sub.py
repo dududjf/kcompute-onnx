@@ -86,6 +86,7 @@ void main()
     def fuse(self, input_tensors: list[tuple[kp.Tensor, list[int]]], updated_algorithms: list[kp.Algorithm],
              updated_tensors: list[kp.Tensor]) -> list[tuple[kp.Tensor, list[int]]]:
         assert len(input_tensors) == 2, "SubOp requires 2 inputs"
+
         input_1 = input_tensors[0][0]
         input_2 = input_tensors[1][0]
         shape_1 = input_tensors[0][1]
@@ -106,23 +107,22 @@ void main()
             elif new_shape_2[i] == 1:
                 output_shape.append(new_shape_1[i])
             else:
-                assert new_shape_1[i] == new_shape_2[i], f"SubOp requires input {i} of the same shape"
+                assert new_shape_1[i] == new_shape_2[i], \
+                    "SubOp requires each dimension to be one or equal to the corresponding dimension"
                 output_shape.append(new_shape_1[i])
 
         new_in_1 = input_1
-        algorithms_1, next_tensors_1 = [], []
         if output_shape[:-2] != new_shape_1[:-2] and not all(e == 1 for e in new_shape_1[:-2]):
             final_shape_1 = output_shape[:-2] + list(new_shape_1[-2:])
-            new_in_1 = broadcast_to(input_1, new_shape_1, final_shape_1, algorithms_1, next_tensors_1, self.manager)
-            updated_algorithms.extend(algorithms_1)
+            new_in_1 = broadcast_to(input_1, new_shape_1, final_shape_1,
+                                    updated_algorithms, updated_tensors, self.manager)
             new_shape_1 = final_shape_1
 
         new_in_2 = input_2
-        algorithms_2, next_tensors_2 = [], []
         if output_shape[:-2] != new_shape_2[:-2] and not all(e == 1 for e in new_shape_2[:-2]):
             final_shape_2 = output_shape[:-2] + list(new_shape_2[-2:])
-            new_in_2 = broadcast_to(input_2, new_shape_2, final_shape_2, algorithms_2, next_tensors_2, self.manager)
-            updated_algorithms.extend(algorithms_2)
+            new_in_2 = broadcast_to(input_2, new_shape_2, final_shape_2,
+                                    updated_algorithms, updated_tensors, self.manager)
             new_shape_2 = final_shape_2
 
         if len(new_shape_1) == 1:

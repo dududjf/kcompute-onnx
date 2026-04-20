@@ -6,51 +6,47 @@ from .shader_utils import compile_source, broadcast_to, LOCAL_X_3D, LOCAL_Y_3D, 
 class PowOp:
     def __init__(self, manager: kp.Manager):
         self.manager = manager
-        self.compiled_shader = compile_source(f"""
+        self.compiled_shader = compile_source(f'''
 #version 450
-layout (local_size_x = {LOCAL_X_3D}, local_size_y = {LOCAL_Y_3D}, local_size_z = {LOCAL_Z_3D}) in;
 
-layout (std430, set = 0, binding = 0) readonly  buffer InBuf1  {{ float in_tensor_1[]; }};
-layout (std430, set = 0, binding = 1) readonly  buffer InBuf2  {{ float in_tensor_2[]; }};
-layout (std430, set = 0, binding = 2) writeonly buffer OutBuf  {{ float out_tensor[];  }};
+layout (local_size_x = {LOCAL_X_3D}, local_size_y = {LOCAL_Y_3D}, local_size_z = {LOCAL_Z_3D}) in;
+layout (std430, set = 0, binding = 0) readonly  buffer InBuf1 {{ float in_tensor_1[]; }};
+layout (std430, set = 0, binding = 1) readonly  buffer InBuf2 {{ float in_tensor_2[]; }};
+layout (std430, set = 0, binding = 2) writeonly buffer OutBuf {{ float out_tensor[]; }};
 layout (std430, set = 0, binding = 3) readonly  buffer UIParams {{ uint params[]; }};
 
-void main() {{
+void main()
+{{
+    uint size_x_1 = params[0];
+    uint size_y_1 = params[1];
+    uint size_z_1 = params[2];
+    uint size_x_2 = params[3];
+    uint size_y_2 = params[4];
+    uint size_z_2 = params[5];
     uint gx = gl_GlobalInvocationID.x;
     uint gy = gl_GlobalInvocationID.y;
     uint gz = gl_GlobalInvocationID.z;
-
-    uint max_x = params[0];
-    uint max_y = params[1];
-    uint max_z = params[2];
-    if (gx >= max_x || gy >= max_y || gz >= max_z) return;
-
-    uint size_x_1 = params[3];
-    uint size_y_1 = params[4];
-    uint size_z_1 = params[5];
-    uint size_x_2 = params[6];
-    uint size_y_2 = params[7];
-    uint size_z_2 = params[8];
-
+    if (gx >= size_x_1 && gx >= size_x_2) return;
+    if (gy >= size_y_1 && gy >= size_y_2) return;
+    if (gz >= size_z_1 && gz >= size_z_2) return;
+    
     uint stride_y_1 = size_z_1;
     uint stride_x_1 = size_y_1 * stride_y_1;
     uint stride_y_2 = size_z_2;
     uint stride_x_2 = size_y_2 * stride_y_2;
     uint stride_y = max(size_z_1, size_z_2);
     uint stride_x = max(size_y_1, size_y_2) * stride_y;
-
-    uint x_1 = min(gx, size_x_1 - 1);
-    uint y_1 = min(gy, size_y_1 - 1);
-    uint z_1 = min(gz, size_z_1 - 1);
-    uint x_2 = min(gx, size_x_2 - 1);
-    uint y_2 = min(gy, size_y_2 - 1);
-    uint z_2 = min(gz, size_z_2 - 1);
+    uint x_1 = size_x_1 > 1 ? gx : 0;
+    uint y_1 = size_y_1 > 1 ? gy : 0;
+    uint z_1 = size_z_1 > 1 ? gz : 0;
+    uint x_2 = size_x_2 > 1 ? gx : 0;
+    uint y_2 = size_y_2 > 1 ? gy : 0;
+    uint z_2 = size_z_2 > 1 ? gz : 0;
 
     uint p_1 = x_1 * stride_x_1 + y_1 * stride_y_1 + z_1;
     uint p_2 = x_2 * stride_x_2 + y_2 * stride_y_2 + z_2;
     out_tensor[gx * stride_x + gy * stride_y + gz] = pow(in_tensor_1[p_1], in_tensor_2[p_2]);
-}}
-""")
+}}''')
 
     def __repr__(self):
         device_name = self.manager.get_device_properties()['device_name']
@@ -143,37 +139,24 @@ void main() {{
             size_y_2 = new_shape_2[1]
             size_z_2 = 1
         else:
-            size_x_1 = int(np.prod(new_shape_1[:-2]))
+            size_x_1 = np.prod(new_shape_1[:-2])
             size_y_1 = new_shape_1[-2]
             size_z_1 = new_shape_1[-1]
-            size_x_2 = int(np.prod(new_shape_2[:-2]))
+            size_x_2 = np.prod(new_shape_2[:-2])
             size_y_2 = new_shape_2[-2]
             size_z_2 = new_shape_2[-1]
-
-        max_x = int(max(size_x_1, size_x_2))
-        max_y = int(max(size_y_1, size_y_2))
-        max_z = int(max(size_z_1, size_z_2))
-
-        size = int(np.prod(output_shape))
-        tensor_out = self.manager.tensor(np.zeros(size, dtype=np.float32))
-        updated_tensors.append(tensor_out)
-
-        params = np.array([max_x, max_y, max_z,
-                           size_x_1, size_y_1, size_z_1,
-                           size_x_2, size_y_2, size_z_2], dtype=np.uint32)
-        param_in = self.manager.tensor_t(params, kp.TensorTypes.device)
+        params = [size_x_1, size_y_1, size_z_1, size_x_2, size_y_2, size_z_2]
+        param_in = self.manager.tensor_t(np.array(params, dtype=np.uint32), kp.TensorTypes.device)
         self.manager.sequence().record(kp.OpTensorSyncDevice([param_in])).eval()
 
-        workgroup = (
-            (max_x + LOCAL_X_3D - 1) // LOCAL_X_3D,
-            (max_y + LOCAL_Y_3D - 1) // LOCAL_Y_3D,
-            (max_z + LOCAL_Z_3D - 1) // LOCAL_Z_3D,
-        )
-
-        updated_algorithms.append(self.manager.algorithm(
-            [new_in_1, new_in_2, tensor_out, param_in],
-            self.compiled_shader,
-            workgroup,
-        ))
+        size = np.prod(output_shape)
+        tensor_out = self.manager.tensor(np.zeros(size, dtype=np.float32))
+        updated_tensors.append(tensor_out)
+        group_x = (max(size_x_1, size_x_2) + LOCAL_X_3D - 1) // LOCAL_X_3D
+        group_y = (max(size_y_1, size_y_2) + LOCAL_Y_3D - 1) // LOCAL_Y_3D
+        group_z = (max(size_z_1, size_z_2) + LOCAL_Z_3D - 1) // LOCAL_Z_3D
+        updated_algorithms.append(self.manager.algorithm([new_in_1, new_in_2, tensor_out, param_in],
+                                                         self.compiled_shader,
+                                                         (group_x, group_y, group_z)))
 
         return [(tensor_out, output_shape)]

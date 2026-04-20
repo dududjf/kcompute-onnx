@@ -27,6 +27,7 @@ void main() {
     uint block_size = uint(block_size_f);
 
     uint in_index = gx * dimension * block_size + gy;
+    uint mid_index = gx * block_size + gy;
 
     float pow_sum = 0.0;
     for (uint i = 0; i < dimension; ++i, in_index += block_size) {

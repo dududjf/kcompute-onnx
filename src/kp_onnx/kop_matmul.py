@@ -45,9 +45,8 @@ void main()
     uint size_n = uint(size_n_f);
     if(row >= size_m || col >= size_n) return;
     float acc = 0.0;
-    uint start_1 = row * size_k;
-    for(uint i = 0, start_2 = col; i < size_k; i++, start_2 += size_n)
-        acc += in_tensor_1[start_1 + i] * in_tensor_2[start_2];
+    for(uint i = 0, start_1 = row * size_k, start_2 = col; i < size_k; ++i, ++start_1, start_2 += size_n)
+        acc += in_tensor_1[start_1] * in_tensor_2[start_2];
     out_tensor[(row * size_n) + col] = acc;
 }}
 """
@@ -76,8 +75,8 @@ void main()
     float acc = 0.0;
     uint start_1 = (batch * size_m * size_k) + (row * size_k);
     uint start_2 = (batch * size_k * size_n) + col;
-    for(uint i = 0; i < size_k; i++, start_2 += size_n)
-        acc += in_tensor_1[start_1 + i] * in_tensor_2[start_2];
+    for(uint i = 0; i < size_k; ++i, ++start_1, start_2 += size_n)
+        acc += in_tensor_1[start_1] * in_tensor_2[start_2];
     out_tensor[(batch * size_m * size_n) + (row * size_n) + col] = acc;
 }}
 """

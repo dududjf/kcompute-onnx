@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx_ssbo.kop_lp_normalization import LpNormalizationOp
+from kp_onnx.kop_lp_normalization import LpNormalizationOp
 
 # Device
 device_id = 0
@@ -33,7 +33,7 @@ print("Max error:", np.abs(np_out - kp_out).max())
 print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
 print("----")
 
-# -------- Case 2: data: 3D, axis: -2 --------
+# -------- Case 2: data: 3D, axis: 0 --------
 print("Case 2: data: 3D, axis: -2")
 
 start_time = time.time()
@@ -49,7 +49,7 @@ print("Max error:", np.abs(np_out - kp_out).max())
 print(np.allclose(np_out, kp_out, rtol=1e-4, atol=1e-4))
 print("----")
 
-# -------- Case 3: data: 3D, axis=0, p: 1 --------
+# -------- Case 3: data: 3D, axis=-2, p: 1 --------
 print("Case 3: data: 3D, axis: 0, p: 1")
 
 start_time = time.time()

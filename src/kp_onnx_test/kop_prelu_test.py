@@ -1,7 +1,7 @@
 from kp import Manager
 import numpy as np
 import time
-from kp_onnx_ssbo.kop_prelu import PReLUOp
+from kp_onnx.kop_prelu import PReLUOp
 
 
 def np_prelu(x, slope):
