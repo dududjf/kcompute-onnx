@@ -1,0 +1,118 @@
+import numpy as np
+import kp
+from .shader_utils import compile_source
+
+
+class ReduceMeanOp:
+
+    def __init__(self, manager: kp.Manager, keepdims=True, noop_with_empty_axes=False):
+        self.keepdims = keepdims
+        self.noop_with_empty_axes = noop_with_empty_axes
+        self.manager = manager
+        self.compiled_shader = compile_source("""
+#version 450
+layout (local_size_x = 1, local_size_y = 1) in;
+layout (binding = 0) buffer buf_in_tensor { float in_tensor[]; };   // 输入张量
+layout (binding = 1) buffer buf_out_tensor { float out_tensor[]; }; // 输出张量
+layout (constant_id = 0) const float dimension_f = 0;   // 归约维度的大小
+layout (constant_id = 1) const float block_size_f = 0;  // 后缀块的大小
+
+void main()
+{
+    uint gx = gl_GlobalInvocationID.x;  // 块组索引
+    uint gy = gl_GlobalInvocationID.y;  // 归约维度内的索引
+
+    uint dimension = uint(dimension_f);
+    uint block_size = uint(block_size_f);
+
+    // 计算输入和中间张量的偏移量
+    uint in_offset = gx * dimension * block_size + gy;
+    uint out_offset = gx * block_size + gy;
+
+    // 累加归约维度上的元素并计算平均值
+    out_tensor[out_offset] = 0.0;
+    for(uint i = 0; i < dimension; ++i, in_offset += block_size)
+        out_tensor[out_offset] += in_tensor[in_offset];
+    out_tensor[out_offset] /= dimension;
+}
+""")
+
+    def __repr__(self):
+        return f"ReduceMeanOp({self.manager.get_device_properties()['device_name']})"
+
+    def __str__(self):
+        return self.__repr__()
+
+    def run(self, *inputs):
+        input_tensors = []
+        for inp in inputs:
+            numpy_in = inp.reshape(-1).astype(np.float32) \
+                if isinstance(inp, np.ndarray) else np.array(inp, dtype=np.float32)
+            tensor = self.manager.tensor(numpy_in)
+            input_tensors.append((tensor, list(inp.shape) if isinstance(inp, np.ndarray) else [len(inp)]))
+
+        updated_algorithms, updated_tensors = [], []
+        output_tensor_and_shape = self.fuse(input_tensors, updated_algorithms, updated_tensors)
+        tensor_out, output_shape = output_tensor_and_shape[0]
+
+        if updated_algorithms:
+            seq = self.manager.sequence()
+            seq.record(kp.OpTensorSyncDevice([input_tensors[0][0]]))
+            for alg in updated_algorithms:
+                seq.record(kp.OpAlgoDispatch(alg))
+            seq.record(kp.OpTensorSyncLocal([tensor_out]))
+            seq.eval()
+
+        output = tensor_out.data().reshape(output_shape)
+
+        for tensor, _ in input_tensors:
+            del tensor
+        del updated_tensors
+        return [output]
+
+    def fuse(self, input_tensors: list[tuple[kp.Tensor, list[int]]], updated_algorithms: list[kp.Algorithm],
+             updated_tensors: list[kp.Tensor]) -> list[tuple[kp.Tensor, list[int]]]:
+        axes = input_tensors[1][0].data().astype(int) if len(input_tensors) > 1 else None
+
+        if self.noop_with_empty_axes and axes is None:
+            return [input_tensors[0]]
+
+        tensor_in = input_tensors[0][0]
+        shape_in = input_tensors[0][1]
+        axis_present = [True if axes is None else False] * len(shape_in)
+        if axes is not None:
+            for axis in axes:
+                if axis >= 0:
+                    axis_present[axis] = True
+                else:
+                    axis_present[axis + len(shape_in)] = True
+
+        tensor_out = tensor_in
+        block_size = 1
+
+        for i in reversed(range(len(shape_in))):
+            if axis_present[i] and shape_in[i] > 1:
+                group_x = int(np.prod(shape_in[:i])) if i >= 0 else 1
+                workgroup = (group_x, block_size, 1)
+                numpy_out = np.zeros(group_x * block_size, dtype=np.float32)
+                tensor_in = tensor_out
+                tensor_out = self.manager.tensor(numpy_out)
+                updated_algorithms.append(self.manager.algorithm(
+                    [tensor_in, tensor_out],
+                    self.compiled_shader,
+                    workgroup,
+                    [shape_in[i], block_size],
+                    []
+                ))
+                updated_tensors.append(tensor_out)
+            else:
+                block_size *= int(shape_in[i])
+
+        if self.keepdims:
+            shape_out = [1 if axis_present[i] else shape_in[i] for i in range(len(shape_in))]
+        else:
+            shape_out = [shape_in[i] for i in range(len(shape_in)) if not axis_present[i]]
+
+        return [(tensor_out, shape_out)]
+
+

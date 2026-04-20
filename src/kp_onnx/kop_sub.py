@@ -3,7 +3,7 @@ import numpy as np
 from .shader_utils import compile_source, broadcast_to
 
 
-class PowOp:
+class SubOp:
     def __init__(self, manager: kp.Manager):
         self.manager = manager
         self.compiled_shader = compile_source('''
@@ -45,26 +45,25 @@ void main()
     uint z_2 = min(gz, size_z_2 - 1);
     uint p_1 = x_1 * stride_x_1 + y_1 * stride_y_1 + z_1;
     uint p_2 = x_2 * stride_x_2 + y_2 * stride_y_2 + z_2;
-    out_tensor[gx * stride_x + gy * stride_y + gz] = pow(in_tensor_1[p_1], in_tensor_2[p_2]);
+    out_tensor[gx * stride_x + gy * stride_y + gz] = in_tensor_1[p_1] - in_tensor_2[p_2];
 }''')
 
     def __repr__(self):
         device_name = self.manager.get_device_properties()['device_name']
-        return f"PowOp({device_name})"
+        return f"SubOp({device_name})"
 
     def __str__(self):
         device_name = self.manager.get_device_properties()['device_name']
-        return f"PowOp({device_name})"
+        return f"SubOp({device_name})"
 
     def run(self, *inputs):
-        assert len(inputs) == 2, "PowOp requires two inputs"
+        assert len(inputs) == 2, "SubOp requires 2 inputs"
 
         input_tensors = []
         for inp in inputs:
-            numpy_in = inp.reshape(-1).astype(np.float32) \
-                if isinstance(inp, np.ndarray) else np.array(inp, dtype=np.float32)
+            numpy_in = inp.reshape(-1).astype(np.float32)
             tensor = self.manager.tensor(numpy_in)
-            input_tensors.append((tensor, list(inp.shape) if isinstance(inp, np.ndarray) else []))
+            input_tensors.append((tensor, list(inp.shape)))
 
         updated_algorithms, updated_tensors = [], []
         output_tensor_and_shape = self.fuse(input_tensors, updated_algorithms, updated_tensors)
@@ -86,7 +85,7 @@ void main()
 
     def fuse(self, input_tensors: list[tuple[kp.Tensor, list[int]]], updated_algorithms: list[kp.Algorithm],
              updated_tensors: list[kp.Tensor]) -> list[tuple[kp.Tensor, list[int]]]:
-        assert len(input_tensors) == 2, "PowOp requires 2 inputs"
+        assert len(input_tensors) == 2, "SubOp requires 2 inputs"
 
         input_1 = input_tensors[0][0]
         input_2 = input_tensors[1][0]
@@ -109,7 +108,7 @@ void main()
                 output_shape.append(new_shape_1[i])
             else:
                 assert new_shape_1[i] == new_shape_2[i], \
-                    "PowOp requires each dimension to be one or equal to the corresponding dimension"
+                    "SubOp requires each dimension to be one or equal to the corresponding dimension"
                 output_shape.append(new_shape_1[i])
 
         new_in_1 = input_1
