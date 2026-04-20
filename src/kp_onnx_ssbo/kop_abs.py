@@ -4,26 +4,30 @@ from .shader_utils import compile_source, LOCAL_X_1D
 
 
 class AbsOp:
+    """
+    onnx::Abs 的 Kompute 实现（逐元素一元 | float32）
+    """
+
     def __init__(self, manager: kp.Manager):
         self.manager = manager
-        self.compiled_shader = compile_source(f'''
+        self.compiled_shader = compile_source(f"""
 #version 450
 
 layout (local_size_x = {LOCAL_X_1D}) in;
-layout (std430, set = 0, binding = 0) readonly  buffer InBuf {{ float in_tensor[]; }};
-layout (std430, set = 0, binding = 1) writeonly buffer OutBuf {{ float out_tensor[]; }};
+layout (std430, set = 0, binding = 0) readonly  buffer InBuf  {{ float in_buf[]; }};
+layout (std430, set = 0, binding = 1) writeonly buffer OutBuf {{ float out_buf[]; }};
 layout (std430, set = 0, binding = 2) readonly  buffer UIParam {{ uint bound_x; }};
 
-void main()
-{{
-    uint gi = gl_GlobalInvocationID.x;
-    if (gi >= bound_x) return;
-    out_tensor[gi] = abs(in_tensor[gi]);
-}}''')
+void main() {{
+    uint idx = gl_GlobalInvocationID.x;
+    if (idx >= bound_x) return;
+    out_buf[idx] = abs(in_buf[idx]);
+}}
+""")
 
     def __repr__(self):
-        device_name = self.manager.get_device_properties()['device_name']
-        return f"AbsOp({device_name})"
+        dev = self.manager.get_device_properties()['device_name']
+        return f"AbsOp({dev})"
 
     __str__ = __repr__
 
@@ -54,21 +58,25 @@ void main()
 
     def fuse(self, input_tensors: list[tuple[kp.Tensor, list[int]]], updated_algorithms: list[kp.Algorithm],
              updated_tensors: list[kp.Tensor]) -> list[tuple[kp.Tensor, list[int]]]:
-        tensor_in = input_tensors[0][0]
-        tensor_shape = input_tensors[0][1]
-
-        size = np.prod(tensor_shape)
+        tensor_in, shape = input_tensors[0]
+        size = int(np.prod(shape)) if len(shape) > 0 else 1
 
         tensor_out = self.manager.tensor(np.zeros(size, dtype=np.float32))
         updated_tensors.append(tensor_out)
 
+        # 创建参数张量并同步到GPU
         param_in = self.manager.tensor_t(np.array([size], dtype=np.uint32), kp.TensorTypes.device)
         self.manager.sequence().record(kp.OpTensorSyncDevice([param_in])).eval()
 
+        # 计算工作组数量
         workgroup = ((size + LOCAL_X_1D - 1) // LOCAL_X_1D, 1, 1)
 
-        updated_algorithms.append(self.manager.algorithm([tensor_in, tensor_out, param_in],
-                                                         self.compiled_shader,
-                                                         workgroup))
+        updated_algorithms.append(
+            self.manager.algorithm(
+                [tensor_in, tensor_out, param_in],
+                self.compiled_shader,
+                workgroup
+            )
+        )
+        return [(tensor_out, shape)]
 
-        return [(tensor_out, tensor_shape)]

@@ -1,31 +1,33 @@
 import kp
 import numpy as np
-from pyshader import python2shader, ivec2, f32, Array
-from pyshader.stdlib import abs
-
-
-@python2shader
-def compute_shader_abs(index=("input", "GlobalInvocationId", ivec2),
-                       in_data=("buffer", 0, Array(f32)),
-                       out_data=("buffer", 1, Array(f32))):
-    i = index.x
-    out_data[i] = abs(in_data[i])
-
-
-_abs_code = compute_shader_abs.to_spirv()
+from .shader_utils import compile_source
 
 
 class AbsOp:
+    """
+    onnx::Abs 的 Kompute 实现（逐元素一元 | float32）
+    """
+
     def __init__(self, manager: kp.Manager):
         self.manager = manager
+        self.shader = compile_source("""
+#version 450
+layout (local_size_x = 1) in;
+
+layout (set = 0, binding = 0) readonly buffer InBuf  { float in_buf[]; };
+layout (set = 0, binding = 1) writeonly buffer OutBuf { float out_buf[]; };
+
+void main() {
+    uint idx = gl_GlobalInvocationID.x;
+    out_buf[idx] = abs(in_buf[idx]);
+}
+""")
 
     def __repr__(self):
-        device_name = self.manager.get_device_properties()['device_name']
-        return f"AbsOp({device_name})"
+        dev = self.manager.get_device_properties()['device_name']
+        return f"AbsOp({dev})"
 
-    def __str__(self):
-        device_name = self.manager.get_device_properties()['device_name']
-        return f"AbsOp({device_name})"
+    __str__ = __repr__
 
     def run(self, *inputs):
         input_tensors = []
@@ -54,10 +56,19 @@ class AbsOp:
 
     def fuse(self, input_tensors: list[tuple[kp.Tensor, list[int]]], updated_algorithms: list[kp.Algorithm],
              updated_tensors: list[kp.Tensor]) -> list[tuple[kp.Tensor, list[int]]]:
-        tensor_in = input_tensors[0][0]
-        tensor_shape = input_tensors[0][1]
-        size = np.prod(tensor_shape)
+        tensor_in, shape = input_tensors[0]
+        size = int(np.prod(shape)) if len(shape) > 0 else 1
+
         tensor_out = self.manager.tensor(np.zeros(size, dtype=np.float32))
         updated_tensors.append(tensor_out)
-        updated_algorithms.append(self.manager.algorithm([tensor_in, tensor_out], _abs_code))
-        return [(tensor_out, tensor_shape)]
+
+        updated_algorithms.append(
+            self.manager.algorithm(
+                [tensor_in, tensor_out],
+                self.shader,
+                (size, 1, 1),
+                [],
+                []
+            )
+        )
+        return [(tensor_out, shape)]
